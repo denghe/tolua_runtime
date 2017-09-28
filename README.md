@@ -19,6 +19,7 @@ build_arm.sh, build_x86.sh 这两个文件需要修改其中的第 4 行 NDK 路
 MAC 相关: <br>
 如果 git 项目是从 windows 下面拉取的, 直接复制到 mac 中将导致 .sh 文件中的换行符 bash 不认. 通常需要直接从 mac 中 git clone 或转一下 CR.<br>
 同时, 还需要执行 chmod 777 build_ios.sh 和 chmod 777 build_osx.sh 来修改它们的执行权限.<br>
+
 **Build**<br>
 编译 windows 需要的 .dll 和 android 需要的 .so 需要在 windows 下进行, 具体为:<br>
 运行 msys2_32bit, 进入项目目录, 依次输入<br>
@@ -34,6 +35,9 @@ MAC 相关: <br>
 ./build_osx.sh<br>
 
 最后, 将 macos 系统下的 git项目的 Plugins 下的 tolua.bundle, iOS 与 windows 下的 windows & android 生成物合并备用. <br>
+
+**Tips**<br>
+u3d 打包 ios 时, ios 最低版本号填 8,  打包 android 时最低版本号填 14
 
 # Libs
 todo: 打算删掉一部分, 得看看 C# 中是否有用到<br>
