@@ -12,15 +12,12 @@ int TestInt64(lua_State *L)
 	if (luaL_dostring(L, R"--(
 
 local a = uint64.new()
-a = 1
-local b = a
-a = 2
-print( a, b )
+a = "1234567890123456"
+local b = a + "123"
 
 local bb = BBuffer.Create()
 bb:WriteUInt64( a, b )
 print( bb )
-
 print( bb:ReadUInt64( 2 ) )
 
 )--")) return lua_error(L);
