@@ -5,4 +5,11 @@
     <ClCompile Include="..\..\..\int64.c" />
     <ClCompile Include="..\..\..\uint64.c" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="xxbuf.h" />
+    <ClInclude Include="xxnbsocket.h" />
+    <ClInclude Include="lua_xxnbsocket.h" />
+    <ClInclude Include="lua_xxbbuffer.h" />
+    <ClInclude Include="lua_xx.h" />
+  </ItemGroup>
 </Project>
