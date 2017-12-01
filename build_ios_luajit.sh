@@ -23,7 +23,21 @@ if [ ! -e $ISDKP/strip ]; then
   sudo cp $ISDKD/usr/bin/strip $ISDKP
 fi
 
-cd iOS
+rm "$DESTDIR"/*.a
+cd $SRCDIR
+
+make clean
+ISDKF="-arch armv7s -isysroot $ISDK/SDKs/$ISDKVER -miphoneos-version-min=8.0"
+make HOST_CC="gcc -m32" TARGET_FLAGS="$ISDKF" TARGET=armv7s TARGET_SYS=iOS
+mv "$SRCDIR"/src/libluajit.a "$DESTDIR"/libluajit-armv7s.a
+
+make clean
+ISDKF="-arch arm64 -isysroot $ISDK/SDKs/$ISDKVER -miphoneos-version-min=8.0"
+make HOST_CC="gcc " TARGET_FLAGS="$ISDKF" TARGET=arm64 TARGET_SYS=iOS
+mv "$SRCDIR"/src/libluajit.a "$DESTDIR"/libluajit-arm64.a
+make clean
+
+cd ../iOS
+$LIPO -create "$DESTDIR"/libluajit-*.a -output "$DESTDIR"/libluajit.a
+$STRIP -S "$DESTDIR"/libluajit.a
 xcodebuild clean
-xcodebuild -configuration=Release
-cp -f ./build/Release-iphoneos/libtolua.a ../Plugins/iOS/
