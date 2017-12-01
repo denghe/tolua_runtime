@@ -11,7 +11,7 @@ LOCAL_MODULE := tolua
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../luajit-2.1/src
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/../../
 
-LOCAL_CPPFLAGS := -O2 -std=gnuc++1z -fexceptions -frtti
+LOCAL_CPPFLAGS := -O2 -std=gnu++1z -fexceptions -frtti
 LOCAL_CFLAGS := -O2 -std=gnu99
 LOCAL_SRC_FILES :=	../../tolua.c \
 					../../int64.c \
@@ -35,6 +35,7 @@ LOCAL_SRC_FILES :=	../../tolua.c \
  					../../luasocket/timeout.c \
  					../../luasocket/udp.c \
  					../../luasocket/usocket.c \
+					../../lua_xx.cpp \
  					
 LOCAL_WHOLE_STATIC_LIBRARIES += libluajit
 include $(BUILD_SHARED_LIBRARY)

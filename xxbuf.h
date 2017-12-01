@@ -1,9 +1,14 @@
 ﻿#pragma execution_character_set("utf-8")
 #pragma once
 #include <assert.h>
+#include <stdlib.h>
+#include <string.h>
 #ifdef _WIN32
 #include <intrin.h>     // _BitScanReverse  64
 #endif
+#include <type_traits>
+#include <cmath>
+#include <limits>
 
 // 含有最基础的数据序列化功能, 针对 c#, c++, lua 需要各自扩展相应的 引用 继承 部分
 struct XxBuf

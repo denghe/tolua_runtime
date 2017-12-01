@@ -3,11 +3,13 @@
 #include "xxbuf.h"
 #include <string>
 
-// todo: 针对 int64 uint64, 调用与 tolua 兼容的处理函数
-// tolua# 中的宏是这样声明的( 注意检查这些数字是否一致 )
-// define LUA_RIDX_INT64	20
-// define LUA_RIDX_UINT64	27
-
+#ifndef _countof
+template<typename T, size_t N>
+size_t _countof(T const (&arr)[N])
+{
+	return N;
+}
+#endif
 
 struct Lua_XxBBuffer : XxBuf
 {
@@ -489,7 +491,7 @@ struct Lua_XxBBuffer : XxBuf
 	inline void WriteObject_(lua_State* L, int i)
 	{
 		if (lua_isnil(L, i) ||					// bb, ..., o, ...
-			lua_islightuserdata(L, i) && (size_t)lua_touserdata(L, i) == 0)
+			(lua_islightuserdata(L, i) && (size_t)lua_touserdata(L, i) == 0))
 		{
 			Write((uint8_t)0);
 		}

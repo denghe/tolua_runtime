@@ -1,17 +1,7 @@
 #!/bin/bash
 # 32 Bit Version
-mkdir -p window/x86
 
-cd luajit-2.1
-make clean
-
-make BUILDMODE=static CC="gcc -m32 -O2"
-cp src/libluajit.a ../window/x86/libluajit.a
-make clean
-
-cd ..
-
-gcc -m32 -O2 -std=gnu99 -shared \
+gcc -m32 -O2 -std=gnu99 -std=gnu++1z -shared \
 	int64.c \
 	uint64.c \
 	tolua.c \
@@ -34,6 +24,7 @@ gcc -m32 -O2 -std=gnu99 -shared \
 	luasocket/timeout.c \
 	luasocket/udp.c \
 	luasocket/wsocket.c \
+	lua_xx.cpp \
 	-o Plugins/x86/tolua.dll \
 	-I./ \
 	-Iluajit-2.1/src \
