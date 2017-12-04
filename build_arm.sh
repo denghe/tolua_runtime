@@ -1,5 +1,4 @@
 NDK=C:/Users/dh/AppData/Local/Android/sdk/ndk-bundle
-cp ./libluajit.a android/jni/libluajit.a
 cd android
 $NDK/ndk-build.cmd clean
 $NDK/ndk-build.cmd
