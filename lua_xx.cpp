@@ -60,11 +60,8 @@ extern "C"
 #include "lua_xxnbsocket.h"
 
 
-extern "C"
+extern "C" void xxlua_openxx(lua_State* L)
 {
-	inline static void xxlua_openxx(lua_State* L)
-	{
-		Lua_XxBBuffer::LuaInit(L);
-		Lua_XxNBSocket::LuaInit(L);
-	}
+	Lua_XxBBuffer::LuaInit(L);
+	Lua_XxNBSocket::LuaInit(L);
 }

@@ -31,4 +31,4 @@ gcc -m32 -O2 -std=gnu99 -std=gnu++1z -shared \
 	-Icjson \
 	-Iluasocket \
 	-lws2_32 \
-	-Wl,--whole-archive window/x86/libluajit.a -Wl,--no-whole-archive -static-libgcc -static-libstdc++
+	-Wl,--whole-archive window/x86/libluajit.a -Wl,--no-whole-archive -static-libgcc -static-libstdc++ -lstdc++

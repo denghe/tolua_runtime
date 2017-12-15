@@ -63,7 +63,7 @@ extern "C"
 
 extern "C"
 {
-	inline static void xxlua_openxx(lua_State* L)
+	inline void xxlua_openxx(lua_State* L)
 	{
 		Lua_XxBBuffer::LuaInit(L);
 		Lua_XxNBSocket::LuaInit(L);
