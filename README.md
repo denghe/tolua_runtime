@@ -1,6 +1,6 @@
 # tolua_runtime ( fork & patch )
 **Prepare**<br>
-OS: windows x64 & macos 12.6+ with xcode9+<br>
+OS: windows x64 & macos 12.6+ with xcode9.2+<br>
 LUAJIT: 最新( 2.1 beta3+ )<br>
 NDK: 最新( 16+ )<br>
 MSYS2: 最新( x64版 with gcc 7.2 )<br>
