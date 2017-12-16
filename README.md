@@ -26,7 +26,6 @@ MAC 相关: <br>
 
 运行 msys2_32bit, 进入项目目录, 依次输入<br>
 ./build_arm.sh<br>
-./build_x86.sh<br>
 ./build_win32.sh<br>
 
 运行 msys2_64bit, 进入项目目录, 输入<br>
