@@ -376,6 +376,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				HEADER_SEARCH_PATHS = "../luajit-2.1/src";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -384,6 +385,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				VALID_ARCHS = "arm64 armv7s";
 			};
 			name = Debug;
 		};
@@ -393,6 +395,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				HEADER_SEARCH_PATHS = "../luajit-2.1/src";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -400,6 +403,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				VALID_ARCHS = "arm64 armv7s";
 			};
 			name = Release;
 		};
