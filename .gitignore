@@ -33,3 +33,9 @@
 
 .vs
 Debug
+/tests/gen_library/obj/x64/Release
+/tests/pkggen/obj/x64/Release
+*.user
+/tests/pkggen_template_PKG/obj/x64/Release
+/tests/server1/obj/x64/Release
+/tests/xxlib_csharp/obj/x64/Release
