@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Global.cs" />
     <Compile Include="PKG_TypeIdMappings.cs" />
     <Compile Include="Server1_Client.cs" />
     <Compile Include="Client_Server1.cs" />
