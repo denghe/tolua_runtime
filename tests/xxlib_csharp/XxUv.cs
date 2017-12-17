@@ -401,9 +401,9 @@ namespace xx
             {
                 var pkg = pkgs[i];
                 bbSend.Clear();
-                bbSend.BeginWritePackageEx(0, 2);
+                bbSend.BeginWritePackage();
                 bbSend.WriteRoot(pkg);
-                if (!bbSend.EndWritePackageEx(-1, 1)) throw new OverflowException();
+                if (!bbSend.EndWritePackage()) throw new OverflowException();
                 sum += bbSend.dataLen;
                 Send(bbSend.buf, 0, bbSend.dataLen);
             }
@@ -414,14 +414,14 @@ namespace xx
         {
             if (bbSend == null) bbSend = new BBuffer(65536);
             bbSend.Clear();
-            bbSend.BeginWritePackageEx(0, 2);
+            bbSend.BeginWritePackage();
             var len = pkgs.Length;
             for (int i = 0; i < len; ++i)
             {
                 var ibb = pkgs[i];
                 bbSend.WriteRoot(ibb);
             }
-            if (!bbSend.EndWritePackageEx(-1, 1)) throw new OverflowException();
+            if (!bbSend.EndWritePackage()) throw new OverflowException();
             Send(bbSend.buf, 0, bbSend.dataLen);
             return bbSend.dataLen;
         }
