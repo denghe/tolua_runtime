@@ -36,3 +36,5 @@ Debug
 obj
 bin
 *.user
+x64
+/tests/xxuvlib_output

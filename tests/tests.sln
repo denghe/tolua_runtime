@@ -10,6 +10,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pkggen_template_PKG", "pkggen_template_PKG\pkggen_template_PKG.csproj", "{82112FE9-6A59-4F6D-A295-D4C7C039A977}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "server1", "server1\server1.csproj", "{E2A79D27-8EF2-4EA1-A2F8-C33A7122DD4F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{38E47D31-F58D-490D-B6DD-18C3165E7F61} = {38E47D31-F58D-490D-B6DD-18C3165E7F61}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gen_library", "gen_library\gen_library.csproj", "{7F62E40F-E079-46D2-85E9-661FCE50168C}"
 EndProject
