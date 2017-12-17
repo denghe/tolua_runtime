@@ -284,39 +284,14 @@ namespace xx
                 buf = newBuf;
             }
 
-            // 包头设计: 1 + N ( 当前不考虑校验位啥的 )
-            // 首字节为类型路由. 2进制结构为 4bit 类型 + 2bit 长度变量长1 + 2 bit 长度变量长2
-            // 类型有 0: 一般数据包   1: RPC包   2+: 其他( todo )
-            // 0: 长1 为 0, 即整个字节只含 2bit 长2. 有效值为  0, 1, 2  ( 即 1, 2, 4 字节 )
-            // 1: 长1 为 0, 1, 2, 3 ( 即 1, 2, 4, 8 字节 ), 意指 RPC 流水号的空间占用, 长度2 同 0
-
             offset = 0;
-            while (buf.Length > offset)                     // 确保 1字节 包头长度
+            while (buf.Length - offset >= 2)            // 确保 2字节 包头长度
             {
-                long serial = 0, dataLen = 0;
-                var offsetBak = offset;                     // 为回滚 备份偏移量
-                var h = buf[offset++];                      // 读出 1字节 固定包头
-                var t = (h & 0b11110000) >> 4;              // 得到类型 id
-                if (t == 0)
-                {
-                    serial = 0;
-                    if (!ReadLen(ref buf, ref offset, ref dataLen, h & 0b00000011))
-                    {
-                        offset = offsetBak;
-                        return;
-                    }
-                }
-                else // t == 1
-                {
-                    if (!ReadLen(ref buf, ref offset, ref serial, (h & 0b00001100) >> 2)
-                        || !ReadLen(ref buf, ref offset, ref dataLen, h & 0b00000011))
-                    {
-                        offset = offsetBak;
-                        return;
-                    }
-                    break;
-                }
+                // 读出头
+                var dataLen = buf[offset] + (buf[offset + 1] << 8);
+                offset += 2;
 
+                // todo: 特殊判断: 如果 dataLen 为 0 ?? 后续跟控制包? 当前直接认为是出错
                 if (dataLen == 0)
                 {
                     buf = null;
@@ -325,28 +300,17 @@ namespace xx
                 }
 
                 // 确保数据长
-                if (dataLen + offset > buf.Length)
+                if (buf.Length - offset < dataLen)
                 {
-                    offset = offsetBak;
-                    return;
+                    offset -= 2;                        // 回滚偏移量, 停在 包头 位置
+                    break;
                 }
 
                 // 发起包回调
-                if (t == 0)
+                if (OnRecvPkg != null)
                 {
-                    if (OnRecvPkg != null)
-                    {
-                        bbRecv.Assign(buf, offset, (int)dataLen);
-                        OnRecvPkg(bbRecv);
-                    }
-                }
-                else // t == 1
-                {
-                    if (loop.rpcMgr != null)
-                    {
-                        bbRecv.Assign(buf, offset, (int)dataLen);
-                        loop.rpcMgr.Callback((uint)serial, bbRecv);
-                    }
+                    bbRecv.Assign(buf, offset, dataLen);
+                    OnRecvPkg(bbRecv);
                 }
 
                 // 继续处理剩余数据
