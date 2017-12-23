@@ -155,26 +155,18 @@ struct XxNBSocket
 				{
 					readLen += r;
 
-					auto buf = (uint8_t*)readBuf.data();		// 无符号方便位操作读出头
-					int offset = 0;								// 游标
+					auto buf = (uint8_t*)readBuf.data();			// 无符号方便位操作读出头
+					int offset = 0;									// 游标
 
-					while (readLen - offset >= 2)				// 确保 2字节 包头长度
+					while (readLen - offset >= 3)					// 确保 3字节 包头长度
 					{
-						// 读出头
-						auto dataLen = buf[offset] + (buf[offset + 1] << 8);
-						offset += 2;
+						// 读出长度信息( 首字节 pkg type id 用不到, 直接跳过 )
+						auto dataLen = buf[offset + 1] + (buf[offset + 2] << 8);
+						if (!dataLen) return Close(-3);				// 异常: 读不到长度, 关闭连接
+						dataLen += 3;								// 将包头的长度纳入
+						if (offset + dataLen > readLen) break;		// 确保数据长
 
-						// todo: 特殊判断: 如果 dataLen 为 0 ?? 后续跟控制包? 当前直接认为是出错
-						if (!dataLen) return Close(-3);
-
-						// 确保数据长
-						if (readLen - offset < dataLen)
-						{
-							offset -= 2;						// 回滚偏移量, 保护 包头
-							break;
-						}
-
-						// 将数据弄到 recvBufs
+						// 将数据弄到 recvBufs( 含包头, 以便上层代码继续解析 )
 						recvBufs.emplace_back((char*)buf + offset, dataLen);
 						offset += dataLen;
 					}

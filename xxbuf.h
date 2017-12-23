@@ -2,6 +2,7 @@
 #pragma once
 #include <assert.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 #ifdef _WIN32
 #include <intrin.h>     // _BitScanReverse  64
