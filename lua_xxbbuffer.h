@@ -30,52 +30,52 @@ struct Lua_XxBBuffer : XxBuf
 		luaL_Reg funcs[] =
 		{
 			{ "__gc", __gc },
-			{ "Create", Create },
-			{ "Register", Register },
+		{ "Create", Create },
+		{ "Register", Register },
 
-			{ "WriteBoolean", WriteBoolean },
-			{ "WriteSByte", WriteInt8 },
-			{ "WriteInt8", WriteInt8 },
-			{ "WriteInt16", WriteInt16 },
-			{ "WriteInt32", WriteInt32 },
-			{ "WriteInt64", WriteInt64 },
-			{ "WriteByte", WriteUInt8 },
-			{ "WriteUInt8", WriteUInt8 },
-			{ "WriteUInt16", WriteUInt16 },
-			{ "WriteUInt32", WriteUInt32 },
-			{ "WriteUInt64", WriteUInt64 },
-			{ "WriteSingle", WriteFloat },
-			{ "WriteFloat", WriteFloat },
-			{ "WriteDouble", WriteDouble },
-			{ "WriteObject", WriteObject },
-			{ "WriteRoot", WriteRoot },
+		{ "WriteBoolean", WriteBoolean },
+		{ "WriteSByte", WriteInt8 },
+		{ "WriteInt8", WriteInt8 },
+		{ "WriteInt16", WriteInt16 },
+		{ "WriteInt32", WriteInt32 },
+		{ "WriteInt64", WriteInt64 },
+		{ "WriteByte", WriteUInt8 },
+		{ "WriteUInt8", WriteUInt8 },
+		{ "WriteUInt16", WriteUInt16 },
+		{ "WriteUInt32", WriteUInt32 },
+		{ "WriteUInt64", WriteUInt64 },
+		{ "WriteSingle", WriteFloat },
+		{ "WriteFloat", WriteFloat },
+		{ "WriteDouble", WriteDouble },
+		{ "WriteObject", WriteObject },
+		{ "WriteRoot", WriteRoot },
 
-			{ "ReadBoolean", ReadBoolean },
-			{ "ReadSByte", ReadInt8 },
-			{ "ReadInt8", ReadInt8 },
-			{ "ReadInt16", ReadInt16 },
-			{ "ReadInt32", ReadInt32 },
-			{ "ReadInt64", ReadInt64 },
-			{ "ReadByte", ReadUInt8 },
-			{ "ReadUInt8", ReadUInt8 },
-			{ "ReadUInt16", ReadUInt16 },
-			{ "ReadUInt32", ReadUInt32 },
-			{ "ReadUInt64", ReadUInt64 },
-			{ "ReadFloat", ReadFloat },
-			{ "ReadSingle", ReadFloat },
-			{ "ReadDouble", ReadDouble },
-			{ "ReadObject", ReadObject },
-			{ "ReadRoot", ReadRoot },
+		{ "ReadBoolean", ReadBoolean },
+		{ "ReadSByte", ReadInt8 },
+		{ "ReadInt8", ReadInt8 },
+		{ "ReadInt16", ReadInt16 },
+		{ "ReadInt32", ReadInt32 },
+		{ "ReadInt64", ReadInt64 },
+		{ "ReadByte", ReadUInt8 },
+		{ "ReadUInt8", ReadUInt8 },
+		{ "ReadUInt16", ReadUInt16 },
+		{ "ReadUInt32", ReadUInt32 },
+		{ "ReadUInt64", ReadUInt64 },
+		{ "ReadFloat", ReadFloat },
+		{ "ReadSingle", ReadFloat },
+		{ "ReadDouble", ReadDouble },
+		{ "ReadObject", ReadObject },
+		{ "ReadRoot", ReadRoot },
 
-			{ "GetDataLen", GetDataLen },
-			{ "GetOffset", GetOffset },
-			{ "SetOffset", SetOffset },
-			{ "Clear", Clear },
-			{ "__tostring", __tostring },
+		{ "GetDataLen", GetDataLen },
+		{ "GetOffset", GetOffset },
+		{ "SetOffset", SetOffset },
+		{ "Clear", Clear },
+		{ "__tostring", __tostring },
 
-			{ "WritePackage", WritePackage },
+		{ "WritePackage", WritePackage },
 
-			{ nullptr, nullptr }
+		{ nullptr, nullptr }
 		};
 		lua_createtable(L, 0, _countof(funcs));	// mt
 		luaL_setfuncs(L, funcs, 0);				// mt
@@ -568,21 +568,48 @@ struct Lua_XxBBuffer : XxBuf
 	{
 		auto& self = GetSelf(L, 2);
 
+
+		int pkgTypeId = 0;
+		uint32_t serial = 0;
+
+		auto top = lua_gettop(L);
+		if (top != 2 && top != 4)
+		{
+			luaL_error(L, "WritePackage args should be self, pkg[, 1/2, serial]");
+		}
+		else if (top == 4)
+		{
+			int isnum;
+			pkgTypeId = (int)lua_tointegerx(L, 3, &isnum);
+			if (!isnum || (pkgTypeId != 1 && pkgTypeId != 2))
+			{
+				luaL_error(L, "the args[ 3 ]: pkgTypeId's type must be 1( request ) or 2 ( response )");
+			}
+
+			serial = (uint32_t)lua_tointegerx(L, 4, &isnum);
+			if (!isnum || (pkgTypeId != 1 && pkgTypeId != 2))
+			{
+				luaL_error(L, "the args[ 4 ]: serial's type must be uint");
+			}
+		}
+
+
 		auto lenBak = self.dataLen;
-		self.Reserve(self.dataLen + 2);
-		self.dataLen += 2;
+		self.Reserve(self.dataLen + 3);
+		self.buf[self.dataLen] = (uint8_t)pkgTypeId;
+		self.dataLen += 3;
 
 		self.BeginWrite_(L);
 		self.WriteObject_(L, 2);
 		self.EndWrite_(L);
 
-		auto pkgLen = self.dataLen - lenBak - 2;
+		auto pkgLen = self.dataLen - lenBak - 3;
 		if (pkgLen > std::numeric_limits<uint16_t>::max())
 		{
 			self.dataLen = lenBak;
-			return false;
+			luaL_error(L, "pkgLen > 64k");
 		}
-		memcpy(self.buf + lenBak, &pkgLen, 2);
+		memcpy(self.buf + lenBak + 1, &pkgLen, 2);
 		return 0;
 	}
 
