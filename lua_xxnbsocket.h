@@ -1,6 +1,7 @@
 ﻿#pragma execution_character_set("utf-8")
 #pragma once
 #include "xxnbsocket.h"
+#include <deque>
 
 struct Lua_XxNBSocket : XxNBSocket
 {
@@ -30,6 +31,11 @@ struct Lua_XxNBSocket : XxNBSocket
 			{ "GetTicks", GetTicks_ },
 			{ "GetState", GetState_ },
 			{ "PopRecv", PopRecv_ },
+
+			// 顺便集成一个 queue<pair<int, uint>> 在这 for RPC
+			{ "PushSerial", PushSerial_ },
+			{ "PeekSerial", PeekSerial_ },
+			{ "PopSerial", PopSerial_ },
 
 			{ nullptr, nullptr }
 		};
@@ -293,4 +299,45 @@ struct Lua_XxNBSocket : XxNBSocket
 		return 1;
 	}
 
+	
+	std::deque<std::pair<int, uint32_t>> serials;
+	inline static int PushSerial_(lua_State* L)
+	{
+		auto& self = GetSelf(L, 3);
+
+		int isnum;
+		auto k = (int)lua_tointegerx(L, 2, &isnum);
+		if (!isnum)
+		{
+			luaL_error(L, "the args[ 2 ]: sec 's type must be a integer");
+		}
+		auto v = (uint32_t)lua_tointegerx(L, 3, &isnum);
+		if (!isnum)
+		{
+			luaL_error(L, "the args[ 3 ]: usec 's type must be a integer");
+		}
+
+		self.serials.push_back(std::make_pair(k, v));
+		return 0;
+	}
+
+	inline static int PeekSerial_(lua_State* L)
+	{
+		auto& self = GetSelf(L, 1);
+		if (self.serials.empty()) return 0;
+		auto& kv = self.serials.front();
+		lua_pushinteger(L, kv.first);
+		lua_pushinteger(L, kv.second);
+		return 2;
+	}
+
+	inline static int PopSerial_(lua_State* L)
+	{
+		auto& self = GetSelf(L, 1);
+		if (!self.serials.empty())
+		{
+			self.serials.pop_front();
+		}
+		return 0;
+	}
 };
