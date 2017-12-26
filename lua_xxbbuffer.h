@@ -390,27 +390,27 @@ struct Lua_XxBBuffer : XxBuf
 
 	inline void CreatePtrDict(lua_State* L)
 	{
-		lua_createtable(L, 0, 64);
 		lua_pushlightuserdata(L, this);
+		lua_createtable(L, 0, 64);
 		lua_rawset(L, LUA_REGISTRYINDEX);
 	}
 	inline void CreateIdxDict(lua_State* L)
 	{
-		lua_createtable(L, 0, 64);
 		lua_pushlightuserdata(L, (char*)this + 1);
+		lua_createtable(L, 0, 64);
 		lua_rawset(L, LUA_REGISTRYINDEX);
 	}
 
 	inline void ReleasePtrDict(lua_State* L)
 	{
-		lua_pushnil(L);
 		lua_pushlightuserdata(L, this);
+		lua_pushnil(L);
 		lua_rawset(L, LUA_REGISTRYINDEX);
 	}
 	inline void ReleaseIdxDict(lua_State* L)
 	{
-		lua_pushnil(L);
 		lua_pushlightuserdata(L, (char*)this + 1);
+		lua_pushnil(L);
 		lua_rawset(L, LUA_REGISTRYINDEX);
 	}
 
@@ -587,21 +587,25 @@ struct Lua_XxBBuffer : XxBuf
 			}
 
 			serial = (uint32_t)lua_tointegerx(L, 4, &isnum);
-			if (!isnum || (pkgTypeId != 1 && pkgTypeId != 2))
+			if (!isnum)
 			{
 				luaL_error(L, "the args[ 4 ]: serial's type must be uint");
 			}
 		}
 
-
 		auto lenBak = self.dataLen;
 		self.Reserve(self.dataLen + 3);
 		self.buf[self.dataLen] = (uint8_t)pkgTypeId;
 		self.dataLen += 3;
+		if (pkgTypeId)
+		{
+			self.Write(serial);
+		}
 
 		self.BeginWrite_(L);
 		self.WriteObject_(L, 2);
 		self.EndWrite_(L);
+		
 
 		auto pkgLen = self.dataLen - lenBak - 3;
 		if (pkgLen > std::numeric_limits<uint16_t>::max())
