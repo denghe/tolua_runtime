@@ -63,6 +63,9 @@ struct Lua_XxNBSocket : XxNBSocket
 		lua_pushinteger(L, 3);					// t, 3
 		lua_setfield(L, -2, "Disconnecting");	// t
 		lua_setglobal(L, "NBSocketStates");		// 
+
+		// 初始化网络环境
+		XxNBSocket::SockInit();
 	}
 
 	/**************************************************************************************************/
