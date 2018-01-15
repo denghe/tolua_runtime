@@ -35,6 +35,12 @@ make clean
 ISDKF="-arch arm64 -isysroot $ISDK/SDKs/$ISDKVER -miphoneos-version-min=8.0"
 make HOST_CC="gcc " TARGET_FLAGS="$ISDKF" TARGET=arm64 TARGET_SYS=iOS
 mv "$SRCDIR"/src/libluajit.a "$DESTDIR"/libluajit-arm64.a
+
+make clean
+ISDKF="-arch armv7 -isysroot $ISDK/SDKs/$ISDKVER -miphoneos-version-min=8.0"
+make HOST_CC="gcc -m32" TARGET_FLAGS="$ISDKF" TARGET=armv7 TARGET_SYS=iOS
+mv "$SRCDIR"/src/libluajit.a "$DESTDIR"/libluajit-armv7.a
+
 make clean
 
 cd ../iOS
