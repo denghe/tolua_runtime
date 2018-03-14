@@ -33,6 +33,7 @@ gcc -m64 -O2 -std=gnu99 -std=gnu++1z -shared \
  -Iluasocket \
  -lws2_32 \
  -Wl,--whole-archive window/x86_64/libluajit.a \
+ -Wl,--no-whole-archive \
  -Wl,--whole-archive window/x86_64/libuv.a \
  -Wl,--no-whole-archive \
  -static-libgcc -static-libstdc++ -lstdc++

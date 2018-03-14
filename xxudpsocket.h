@@ -4,7 +4,9 @@
 #include <uv.h>
 #include "ikcp.h"
 #include <stdio.h>	// printf
-#ifndef _WIN32
+#ifdef _WIN32
+#include <objbase.h>
+#else
 #include <uuid.h>
 #endif
 #include <deque>
