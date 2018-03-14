@@ -365,12 +365,7 @@ public:
 		freeaddrinfo(res0);
 		return -1;
 #else
-		auto addr = (sockaddr_in*)addr6;
-		memset(addr, 0, sizeof(*addr));
-		addr->sin_family = AF_INET;
-		addr->sin_port = htons(port);
-		addr->sin_addr.s_addr = inet_addr(ip);
-		return 0;
+		return uv_ip4_addr(ip, port, (sockaddr_in*)addr6);
 #endif
 	}
 

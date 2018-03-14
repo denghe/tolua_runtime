@@ -24,16 +24,19 @@ gcc -m64 -O2 -std=gnu99 -std=gnu++1z -shared \
  luasocket/timeout.c \
  luasocket/udp.c \
  luasocket/wsocket.c \
- lua_xx.cpp \
  ikcp.cpp \
+ lua_xx.cpp \
+ ./window/x86_64/libuv.a \
  -o Plugins/x86_64/tolua.dll \
  -I./ \
  -I./libuv/ \
- -Iluajit-2.1/src \
- -Iluasocket \
+ -I./luajit-2.1/src/ \
+ -I./luasocket/ \
  -lws2_32 \
+ -lole32 \
+ -lpsapi \
+ -lIPHLPAPI \
+ -luserenv \
  -Wl,--whole-archive window/x86_64/libluajit.a \
- -Wl,--no-whole-archive \
- -Wl,--whole-archive window/x86_64/libuv.a \
  -Wl,--no-whole-archive \
  -static-libgcc -static-libstdc++ -lstdc++

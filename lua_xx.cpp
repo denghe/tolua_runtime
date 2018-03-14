@@ -56,6 +56,7 @@ extern "C"
 }
 
 
+#include "uv.h"
 #include "lua_xxbbuffer.h"
 #include "lua_xxnbsocket.h"
 #include "lua_xxudpsocket.h"
@@ -65,4 +66,5 @@ extern "C" void xxlua_openxx(lua_State* L)
 {
 	Lua_XxBBuffer::LuaInit(L);
 	Lua_XxNBSocket::LuaInit(L);
+	Lua_XxUdpSocket::LuaInit(L);
 }
