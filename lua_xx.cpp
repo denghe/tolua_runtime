@@ -58,6 +58,7 @@ extern "C"
 
 #include "lua_xxbbuffer.h"
 #include "lua_xxnbsocket.h"
+#include "lua_xxudpsocket.h"
 
 
 extern "C" void xxlua_openxx(lua_State* L)

@@ -6,6 +6,12 @@ LOCAL_SRC_FILES := libluajit.a
 include $(PREBUILT_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
+LOCAL_MODULE := libuv
+LOCAL_SRC_FILES := libuv.a
+include $(PREBUILT_STATIC_LIBRARY)
+
+
+include $(CLEAR_VARS)
 LOCAL_FORCE_STATIC_EXECUTABLE := true
 LOCAL_MODULE := tolua
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../luajit-2.1/src
@@ -38,4 +44,5 @@ LOCAL_SRC_FILES :=	../../tolua.c \
 					../../lua_xx.cpp \
  					
 LOCAL_WHOLE_STATIC_LIBRARIES += libluajit
+LOCAL_WHOLE_STATIC_LIBRARIES += libuv
 include $(BUILD_SHARED_LIBRARY)
