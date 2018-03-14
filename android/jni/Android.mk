@@ -41,6 +41,7 @@ LOCAL_SRC_FILES :=	../../tolua.c \
  					../../luasocket/timeout.c \
  					../../luasocket/udp.c \
  					../../luasocket/usocket.c \
+					../../ikcp.cpp \
 					../../lua_xx.cpp \
  					
 LOCAL_WHOLE_STATIC_LIBRARIES += libluajit

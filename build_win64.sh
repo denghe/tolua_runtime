@@ -25,8 +25,10 @@ gcc -m64 -O2 -std=gnu99 -std=gnu++1z -shared \
  luasocket/udp.c \
  luasocket/wsocket.c \
  lua_xx.cpp \
+ ikcp.cpp \
  -o Plugins/x86_64/tolua.dll \
  -I./ \
+ -I./libuv/ \
  -Iluajit-2.1/src \
  -Iluasocket \
  -lws2_32 \
