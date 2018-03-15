@@ -7,7 +7,11 @@
 #ifdef _WIN32
 #include <objbase.h>
 #else
+#ifdef ANDROID
+#include <linux/uuid.h>
+#else
 #include <uuid.h>
+#endif
 #endif
 #include <deque>
 #include <array>
@@ -154,11 +158,7 @@ struct XxUdpSocket
 		if (udp) return -4;								// not Disconnect ?
 
 		// renew Guid
-#ifdef _WIN32
-		CoCreateGuid((GUID*)&guid);
-#else
-		uuid_generate(reinterpret_cast<unsigned char *>(&guid));
-#endif
+		guid.Fill();
 
 		udp = (uv_udp_t*)Alloc(sizeof(uv_udp_t), this);
 		if (!udp) return -5;

@@ -16,8 +16,9 @@ LOCAL_FORCE_STATIC_EXECUTABLE := true
 LOCAL_MODULE := tolua
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../luajit-2.1/src
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/../../
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/../../libuv
 
-LOCAL_CPPFLAGS := -O2 -std=gnu++1z -fexceptions -frtti
+LOCAL_CPPFLAGS := -O2 -std=gnu++1z -fexceptions -frtti -DANDROID
 LOCAL_CFLAGS := -O2 -std=gnu99
 LOCAL_SRC_FILES :=	../../tolua.c \
 					../../int64.c \
