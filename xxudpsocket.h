@@ -4,15 +4,6 @@
 #include <uv.h>
 #include "ikcp.h"
 #include <stdio.h>	// printf
-#ifdef _WIN32
-#include <objbase.h>
-#else
-#ifdef ANDROID
-#include <linux/uuid.h>
-#else
-#include <uuid.h>
-#endif
-#endif
 #include <deque>
 #include <array>
 
