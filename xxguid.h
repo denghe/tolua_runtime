@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include <stdint.h>
 
 class Guid
@@ -65,7 +65,8 @@ inline void Guid::Fill()
 inline void Guid::Fill()
 {
 	auto newId = CFUUIDCreate(NULL);
-	*this = *(Guid*)&CFUUIDGetUUIDBytes(newId);
+    auto bs = CFUUIDGetUUIDBytes(newId);
+	*this = *(Guid*)&bs;
 	CFRelease(newId);
 }
 #endif

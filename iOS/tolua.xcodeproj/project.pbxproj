@@ -34,6 +34,8 @@
 		840092EF1CCF45A800F89A56 /* unix.c in Sources */ = {isa = PBXBuildFile; fileRef = 840092DB1CCF45A800F89A56 /* unix.c */; };
 		840092F01CCF45A800F89A56 /* usocket.c in Sources */ = {isa = PBXBuildFile; fileRef = 840092DD1CCF45A800F89A56 /* usocket.c */; };
 		8445EB151D4C9F8A00397F5E /* uint64.c in Sources */ = {isa = PBXBuildFile; fileRef = 8445EB141D4C9F8A00397F5E /* uint64.c */; };
+		E36A4BA3205BA1E20024C01D /* libuv.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E36A4BA2205BA1E20024C01D /* libuv.a */; };
+		E36A4BA5205BA22F0024C01D /* ikcp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36A4BA4205BA22F0024C01D /* ikcp.cpp */; };
 		E3A88E541FD25489002A20E9 /* lua_xx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3A88E531FD25489002A20E9 /* lua_xx.cpp */; };
 /* End PBXBuildFile section */
 
@@ -97,6 +99,8 @@
 		840092DD1CCF45A800F89A56 /* usocket.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = usocket.c; sourceTree = "<group>"; };
 		840092DE1CCF45A800F89A56 /* usocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = usocket.h; sourceTree = "<group>"; };
 		8445EB141D4C9F8A00397F5E /* uint64.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = uint64.c; path = ../../uint64.c; sourceTree = "<group>"; };
+		E36A4BA2205BA1E20024C01D /* libuv.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libuv.a; sourceTree = SOURCE_ROOT; };
+		E36A4BA4205BA22F0024C01D /* ikcp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ikcp.cpp; path = ../../ikcp.cpp; sourceTree = "<group>"; };
 		E3A88E531FD25489002A20E9 /* lua_xx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lua_xx.cpp; path = ../../lua_xx.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -105,6 +109,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E36A4BA3205BA1E20024C01D /* libuv.a in Frameworks */,
 				840092A81CCF44F800F89A56 /* libluajit.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -131,6 +136,8 @@
 		8400929D1CCF43D600F89A56 /* tolua */ = {
 			isa = PBXGroup;
 			children = (
+				E36A4BA4205BA22F0024C01D /* ikcp.cpp */,
+				E36A4BA2205BA1E20024C01D /* libuv.a */,
 				E3A88E531FD25489002A20E9 /* lua_xx.cpp */,
 				840092BD1CCF45A800F89A56 /* luasocket */,
 				840092B31CCF455100F89A56 /* cjson */,
@@ -258,6 +265,7 @@
 			files = (
 				840092A11CCF43D600F89A56 /* tolua.m in Sources */,
 				840092EB1CCF45A800F89A56 /* serial.c in Sources */,
+				E36A4BA5205BA22F0024C01D /* ikcp.cpp in Sources */,
 				E3A88E541FD25489002A20E9 /* lua_xx.cpp in Sources */,
 				840092EE1CCF45A800F89A56 /* udp.c in Sources */,
 				840092E41CCF45A800F89A56 /* except.c in Sources */,
@@ -378,7 +386,10 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				ENABLE_BITCODE = NO;
 				GCC_C_LANGUAGE_STANDARD = c99;
-				HEADER_SEARCH_PATHS = "../luajit-2.1/src";
+				HEADER_SEARCH_PATHS = (
+					"../luajit-2.1/src",
+					../libuv,
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -398,7 +409,10 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				ENABLE_BITCODE = NO;
 				GCC_C_LANGUAGE_STANDARD = c99;
-				HEADER_SEARCH_PATHS = "../luajit-2.1/src";
+				HEADER_SEARCH_PATHS = (
+					"../luajit-2.1/src",
+					../libuv,
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",

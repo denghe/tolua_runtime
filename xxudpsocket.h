@@ -1,7 +1,7 @@
-﻿#pragma execution_character_set("utf-8")
+#pragma execution_character_set("utf-8")
 
 #include "xxbuf.h"
-#include <uv.h>
+#include "uv.h"
 #include "ikcp.h"
 #include <stdio.h>	// printf
 #include <deque>
@@ -120,14 +120,14 @@ struct XxUdpSocket
 			auto s = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
 			if (s < 0) continue;
 			close(s);
-			memcpy(addr, res->ai_addr, res->ai_addrlen);
+			memcpy(&addr, res->ai_addr, res->ai_addrlen);
 			freeaddrinfo(res0);
 
 			char ipBuf[128];
-			if (addr->sin6_family == AF_INET6)
-				uv_ip6_name(addr, ipBuf, 128);
+			if (addr.sin6_family == AF_INET6)
+				uv_ip6_name(&addr, ipBuf, 128);
 			else
-				uv_ip4_name((sockaddr_in*)addr, ipBuf, 128);
+				uv_ip4_name((sockaddr_in*)&addr, ipBuf, 128);
 			printf("fill ip = %s\n", ipBuf);
 
 			return 0;
