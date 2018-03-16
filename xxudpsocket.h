@@ -1,4 +1,4 @@
-#pragma execution_character_set("utf-8")
+﻿#pragma execution_character_set("utf-8")
 
 #include "xxbuf.h"
 #include "uv.h"
@@ -37,7 +37,7 @@ struct XxUdpSocket
 	XxUdpSocket()
 	{
 		// todo: 创建独立 uv 结构( 先不做 )
-		uv = uv_default_loop();		
+		uv = uv_default_loop();
 		addr.sin6_family = 0;						// 用这个来做是否有设置过 addr 的标记
 	}
 
@@ -230,13 +230,17 @@ struct XxUdpSocket
 		uv_run(uv, uv_run_mode::UV_RUN_NOWAIT);
 		switch (state)
 		{
+		case States::Disconnected:
+		{
+			return 0;
+		}
 		case States::Connecting:
 		{
 			return -1;								// udp 不存在这个状态
 		}
 		case States::Disconnecting:
 		{
-			if (!ticks) Close(0);
+			if (!ticks) return Close(0);
 		}
 		}
 		ikcp_update(kcp, interval * ticks);
