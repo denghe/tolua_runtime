@@ -5,10 +5,11 @@
 
 #ifndef _countof
 template<typename T, size_t N>
-size_t _countof(T const (&arr)[N])
+size_t _countof_helper(T const (&arr)[N])
 {
 	return N;
 }
+#define _countof(_Array) _countof_helper(_Array)
 #endif
 
 struct Lua_XxBBuffer : XxBuf
@@ -66,6 +67,38 @@ struct Lua_XxBBuffer : XxBuf
 		{ "ReadDouble", ReadDouble },
 		{ "ReadObject", ReadObject },
 		{ "ReadRoot", ReadRoot },
+
+
+		{ "WriteNullableBoolean", WriteNullableBoolean },
+		{ "WriteNullableSByte", WriteNullableInt8 },
+		{ "WriteNullableInt8", WriteNullableInt8 },
+		{ "WriteNullableInt16", WriteNullableInt16 },
+		{ "WriteNullableInt32", WriteNullableInt32 },
+		{ "WriteNullableInt64", WriteNullableInt64 },
+		{ "WriteNullableByte", WriteNullableUInt8 },
+		{ "WriteNullableUInt8", WriteNullableUInt8 },
+		{ "WriteNullableUInt16", WriteNullableUInt16 },
+		{ "WriteNullableUInt32", WriteNullableUInt32 },
+		{ "WriteNullableUInt64", WriteNullableUInt64 },
+		{ "WriteNullableSingle", WriteNullableFloat },
+		{ "WriteNullableFloat", WriteNullableFloat },
+		{ "WriteNullableDouble", WriteNullableDouble },
+
+		{ "ReadNullableBoolean", ReadNullableBoolean },
+		{ "ReadNullableSByte", ReadNullableInt8 },
+		{ "ReadNullableInt8", ReadNullableInt8 },
+		{ "ReadNullableInt16", ReadNullableInt16 },
+		{ "ReadNullableInt32", ReadNullableInt32 },
+		{ "ReadNullableInt64", ReadNullableInt64 },
+		{ "ReadNullableByte", ReadNullableUInt8 },
+		{ "ReadNullableUInt8", ReadNullableUInt8 },
+		{ "ReadNullableUInt16", ReadNullableUInt16 },
+		{ "ReadNullableUInt32", ReadNullableUInt32 },
+		{ "ReadNullableUInt64", ReadNullableUInt64 },
+		{ "ReadNullableFloat", ReadNullableFloat },
+		{ "ReadNullableSingle", ReadNullableFloat },
+		{ "ReadNullableDouble", ReadNullableDouble },
+
 
 		{ "GetDataLen", GetDataLen },
 		{ "GetOffset", GetOffset },
@@ -233,7 +266,7 @@ struct Lua_XxBBuffer : XxBuf
 	template<typename T>
 	inline void WriteNum_(lua_State* L, int i)
 	{
-		if constexpr(std::is_same_v<T, bool>)
+		if constexpr (std::is_same<T, bool>::value)
 		{
 			if (!lua_isboolean(L, i))
 			{
@@ -241,7 +274,7 @@ struct Lua_XxBBuffer : XxBuf
 			}
 			Write(lua_toboolean(L, i) != 0);
 		}
-		else if constexpr(std::is_floating_point_v<T>)
+		else if constexpr (std::is_floating_point<T>::value)
 		{
 			T v;
 			int isnum;
@@ -280,7 +313,7 @@ struct Lua_XxBBuffer : XxBuf
 	template<typename T>
 	inline static int WriteNum(lua_State* L)
 	{
-		static_assert(std::is_arithmetic_v<T>);
+		static_assert(std::is_arithmetic<T>::value);
 		auto& self = GetSelf(L, 2);
 		auto top = lua_gettop(L);
 		for (int i = 2; i <= top; ++i)
@@ -290,16 +323,55 @@ struct Lua_XxBBuffer : XxBuf
 		return 0;
 	}
 	inline static int WriteBoolean(lua_State* L) { return WriteNum<bool>(L); }
-	inline static int WriteInt8(lua_State* L) { return WriteNum<int8_t>(L); }
-	inline static int WriteInt16(lua_State* L) { return WriteNum<int16_t>(L); }
-	inline static int WriteInt32(lua_State* L) { return WriteNum<int32_t>(L); }
-	inline static int WriteInt64(lua_State* L) { return WriteNum<int64_t>(L); }
-	inline static int WriteUInt8(lua_State* L) { return WriteNum<uint8_t>(L); }
-	inline static int WriteUInt16(lua_State* L) { return WriteNum<uint16_t>(L); }
-	inline static int WriteUInt32(lua_State* L) { return WriteNum<uint32_t>(L); }
-	inline static int WriteUInt64(lua_State* L) { return WriteNum<uint64_t>(L); }
-	inline static int WriteFloat(lua_State* L) { return WriteNum<float>(L); }
-	inline static int WriteDouble(lua_State* L) { return WriteNum<double>(L); }
+	inline static int WriteInt8(lua_State* L) { return    WriteNum<int8_t>(L); }
+	inline static int WriteInt16(lua_State* L) { return   WriteNum<int16_t>(L); }
+	inline static int WriteInt32(lua_State* L) { return   WriteNum<int32_t>(L); }
+	inline static int WriteInt64(lua_State* L) { return   WriteNum<int64_t>(L); }
+	inline static int WriteUInt8(lua_State* L) { return   WriteNum<uint8_t>(L); }
+	inline static int WriteUInt16(lua_State* L) { return  WriteNum<uint16_t>(L); }
+	inline static int WriteUInt32(lua_State* L) { return  WriteNum<uint32_t>(L); }
+	inline static int WriteUInt64(lua_State* L) { return  WriteNum<uint64_t>(L); }
+	inline static int WriteFloat(lua_State* L) { return   WriteNum<float>(L); }
+	inline static int WriteDouble(lua_State* L) { return  WriteNum<double>(L); }
+
+
+	template<typename T>
+	inline void WriteNullableNum_(lua_State* L, int i)
+	{
+		// 判断参数是不是 nil / null(lightuserdata). 如果是, 就写入 0 并 return. 
+		if (lua_isnil(L, i) || lua_islightuserdata(L, i))
+		{
+			Write((uint8_t)0);
+			return;
+		}
+		WriteNum_<T>(L, i);
+	}
+
+	template<typename T>
+	inline static int WriteNullableNum(lua_State* L)
+	{
+		static_assert(std::is_arithmetic<T>::value);
+		auto& self = GetSelf(L, 2);
+		auto top = lua_gettop(L);
+		for (int i = 2; i <= top; ++i)
+		{
+			self.WriteNullableNum_<T>(L, i);
+		}
+		return 0;
+	}
+
+	inline static int WriteNullableBoolean(lua_State* L) { return WriteNullableNum<bool>(L); }
+	inline static int WriteNullableInt8(lua_State* L) { return    WriteNullableNum<int8_t>(L); }
+	inline static int WriteNullableInt16(lua_State* L) { return   WriteNullableNum<int16_t>(L); }
+	inline static int WriteNullableInt32(lua_State* L) { return   WriteNullableNum<int32_t>(L); }
+	inline static int WriteNullableInt64(lua_State* L) { return   WriteNullableNum<int64_t>(L); }
+	inline static int WriteNullableUInt8(lua_State* L) { return   WriteNullableNum<uint8_t>(L); }
+	inline static int WriteNullableUInt16(lua_State* L) { return  WriteNullableNum<uint16_t>(L); }
+	inline static int WriteNullableUInt32(lua_State* L) { return  WriteNullableNum<uint32_t>(L); }
+	inline static int WriteNullableUInt64(lua_State* L) { return  WriteNullableNum<uint64_t>(L); }
+	inline static int WriteNullableFloat(lua_State* L) { return   WriteNullableNum<float>(L); }
+	inline static int WriteNullableDouble(lua_State* L) { return  WriteNullableNum<double>(L); }
+
 
 
 	// 读变长数据之 LUA 报错版
@@ -324,20 +396,20 @@ struct Lua_XxBBuffer : XxBuf
 	{
 		T v;
 		Read(L, v);
-		if constexpr(std::is_same_v<T, bool>)			// bool
+		if constexpr (std::is_same<T, bool>::value)			// bool
 		{
 			lua_pushboolean(L, v);
 		}
-		else if constexpr(std::is_floating_point_v<T>)	// float or double
+		else if constexpr (std::is_floating_point<T>::value)	// float or double
 		{
 			lua_pushnumber(L, (lua_Number)v);
 		}
 #if LUA_VERSION_NUM < 503
-		else if constexpr(std::is_same_v<T, int64_t>)
+		else if constexpr (std::is_same<T, int64_t>::value)
 		{
 			tolua_pushint64(L, v);
 		}
-		else if constexpr(std::is_same_v<T, uint64_t>)
+		else if constexpr (std::is_same<T, uint64_t>::value)
 		{
 			tolua_pushuint64(L, v);
 		}
@@ -351,7 +423,7 @@ struct Lua_XxBBuffer : XxBuf
 	template<typename T>
 	static int ReadNum(lua_State* L)
 	{
-		static_assert(std::is_arithmetic_v<T>);
+		static_assert(std::is_arithmetic<T>::value);
 		auto& self = GetSelf(L, 1);
 		auto top = lua_gettop(L);
 		int readCount = 1;
@@ -386,6 +458,53 @@ struct Lua_XxBBuffer : XxBuf
 	inline static int ReadFloat(lua_State* L) { return  ReadNum<float>(L); }
 	inline static int ReadDouble(lua_State* L) { return ReadNum<double>(L); }
 
+
+	template<typename T>
+	void ReadNullableNum_(lua_State* L)
+	{
+		// 判断是否有值. 没有值就压入 null
+		uint8_t hasValue = 0;
+		Read(L, hasValue);
+		if (!hasValue)
+		{
+			lua_pushlightuserdata(L, 0);
+			return;
+		}
+		ReadNum_<T>(L);
+	}
+
+	template<typename T>
+	static int ReadNullableNum(lua_State* L)
+	{
+		static_assert(std::is_arithmetic<T>::value);
+		auto& self = GetSelf(L, 1);
+		auto top = lua_gettop(L);
+		int readCount = 1;
+		if (top == 2)
+		{
+			readCount = (int)lua_tointeger(L, 2);
+		}
+		if (readCount > LUA_MINSTACK - 2 && !lua_checkstack(L, readCount))
+		{
+			luaL_error(L, "lua_checkstack fail. current top = %d, expect +%d", top, readCount);
+		}
+		for (int i = 0; i < readCount; ++i)
+		{
+			self.ReadNullableNum_<T>(L);
+		}
+		return readCount;
+	}
+	inline static int ReadNullableBoolean(lua_State* L) { return ReadNullableNum<bool>(L); }
+	inline static int ReadNullableInt8(lua_State* L) { return    ReadNullableNum<int8_t>(L); }
+	inline static int ReadNullableInt16(lua_State* L) { return   ReadNullableNum<int16_t>(L); }
+	inline static int ReadNullableInt32(lua_State* L) { return   ReadNullableNum<int32_t>(L); }
+	inline static int ReadNullableInt64(lua_State* L) { return   ReadNullableNum<int64_t>(L); }
+	inline static int ReadNullableUInt8(lua_State* L) { return   ReadNullableNum<uint8_t>(L); }
+	inline static int ReadNullableUInt16(lua_State* L) { return  ReadNullableNum<uint16_t>(L); }
+	inline static int ReadNullableUInt32(lua_State* L) { return  ReadNullableNum<uint32_t>(L); }
+	inline static int ReadNullableUInt64(lua_State* L) { return  ReadNullableNum<uint64_t>(L); }
+	inline static int ReadNullableFloat(lua_State* L) { return   ReadNullableNum<float>(L); }
+	inline static int ReadNullableDouble(lua_State* L) { return  ReadNullableNum<double>(L); }
 
 
 	inline void CreatePtrDict(lua_State* L)
@@ -597,7 +716,7 @@ struct Lua_XxBBuffer : XxBuf
 		self.Reserve(self.dataLen + 3);
 		self.buf[self.dataLen] = (uint8_t)pkgTypeId;
 		self.dataLen += 3;
-		if (pkgTypeId)
+		if (serial)
 		{
 			self.Write(serial);
 		}
